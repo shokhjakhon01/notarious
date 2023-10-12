@@ -18,14 +18,18 @@ const {
 router.use("/:tourId/reviews", reviewRoutes);
 
 router.route("/top-5-cheap").get(aliasTop, getAllTours);
-router.route("/tour-stats").get(getToursStats);
-router.route("/monthly-plan/:year").get(getMonthlyPlan);
+router.route("/tour-stats").get(protect, restrictTo("admin", "lead-guide"), getToursStats);
+router.route("/monthly-plan/:year")
+  .get(protect, restrictTo("admin", "lead-guide", 'guide'), getMonthlyPlan);
 
-router.route("/").get(protect, getAllTours).post(createTour);
+router.route("/")
+  .get(protect, getAllTours)
+  .post(protect, restrictTo('admin', 'lead-guide'), createTour);
+
 router
   .route("/:id")
   .get(getTour)
-  .patch(updateTour)
+  .patch(protect, restrictTo("admin", "lead-guide"), updateTour)
   .delete(protect, restrictTo("admin", "lead-guide"), deleteTour);
 
 module.exports = router;
