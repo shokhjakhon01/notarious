@@ -18,6 +18,10 @@ const limiter = rateLimit({
 });
 
 const app = express();
+
+app.set("view engine", "pug");
+app.set("views", `${__dirname}/views`);
+
 app.use(helmet());
 app.use(express.json({ limit: "10kb" }));
 app.use(mongoSanitize());
@@ -36,11 +40,22 @@ app.use(
 );
 
 app.use(express.static(`${__dirname}/public`));
+
 app.use("/api", limiter);
 
 app.use((req, res, next) => {
   req.requestedTime = new Date().toISOString();
   next();
+});
+
+app.get("/", (req, res) => {
+  res.status(200).render('base', { tour: "The Forrest hiker" });
+});
+
+app.get("/overview", (req, res) => {
+  res.status(200).render('overview', {
+    title: "All tour"
+  });
 });
 
 app.use("/api/v1/tours", tourRouter);
