@@ -22,6 +22,9 @@ router.route("/tour-stats").get(protect, restrictTo("admin", "lead-guide"), getT
 router.route("/monthly-plan/:year")
   .get(protect, restrictTo("admin", "lead-guide", 'guide'), getMonthlyPlan);
 
+router.route("/tours-within/:distance/center/:latlng/unit/:unit",).get(tourController.getToursWithin);
+router.route("/distances/:latlng/unit/:unit").get(tourController.getDistances);
+
 router.route("/")
   .get(protect, getAllTours)
   .post(protect, restrictTo('admin', 'lead-guide'), createTour);
