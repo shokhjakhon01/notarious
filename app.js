@@ -2,6 +2,7 @@ const express = require("express");
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
+const viewRouter = require("./routes/viewRoutes");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const rateLimit = require("express-rate-limit");
@@ -48,16 +49,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.status(200).render('base', { tour: "The Forrest hiker" });
-});
-
-app.get("/overview", (req, res) => {
-  res.status(200).render('overview', {
-    title: "All tour"
-  });
-});
-
+app.use('/', viewRouter);
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
