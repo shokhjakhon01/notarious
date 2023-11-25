@@ -5,6 +5,7 @@ const AppError = require("../utils/appError")
 const { promisify } = require("util")
 const sendEmail = require("../utils/email")
 const crypto = require("crypto")
+const Email = require("./../utils/email")
 
 const signToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -41,7 +42,11 @@ const createSendToken = (user, statusCode, res) => {
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body)
 
-  createSendToken(newUser, 201, res)
+  // const url = `${req.protocol}://${req.get("host")}/me`
+  // await new Email(newUser, url).sendWelcome()
+  await newUser.save()
+
+  createSendToken(newUser, 201, req, res)
 })
 
 exports.login = catchAsync(async (req, res, next) => {
